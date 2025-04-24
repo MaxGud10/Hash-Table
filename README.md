@@ -77,7 +77,7 @@ uint32_t ConstHash (const HashTableElem_t value)
 
 Диаграмма распределения такой хэш-функции:
 
-![const_hash](img/ConstHash().png)
+![const_hash](img/ConstHash.png)
 
 Дисперсия такого распределения:
 ```
@@ -105,7 +105,7 @@ uint32_t FirstSymHash (const HashTableElem_t value)
 
 Диаграмма распределения такой хэш-функции:
 
-![FirstSymHash](img/FirstSymHash().png)
+![FirstSymHash](img/FirstSymHash.png)
 
 Дисперсия такого распределения:
 ```
@@ -131,11 +131,11 @@ uint32_t LenHash (const HashTableElem_t value)
 
 Диаграмма распределения такой хэш-функции:
 
-![len_hash](img/LenHash().png)
+![len_hash](img/LenHash.png)
 
 Видно, что значения 40 и более хэш-функция не возвращает, поэтому построим приближенную по оси x гистограмму: 
 
-![len_hashSzoom](img/LenHash()_zoom.png)
+![len_hashSzoom](img/LenHash_zoom.png)
 
 Дисперсия такого распределения:
 ```
@@ -176,7 +176,7 @@ uint32_t AsciiSumHash (const HashTableElem_t value)
 
 Диаграмма распределения такой хэш-функции:
 
-![ascii_sum_787](img/AsciiSumHash()_787.png)
+![ascii_sum_787](img/AsciiSumHash_787.png)
 
 Дисперсия такого распределения:
 ```
@@ -192,7 +192,7 @@ variance of elements in hash table = 33.95
 
 Диаграмма распределения такой хэш-функции:
 
-![101_ascii_hash](img/AsciiSumHash()_101.png)    
+![101_ascii_hash](img/AsciiSumHash_101.png)    
 
 Дисперсия такого распределения:
 ```
@@ -226,7 +226,7 @@ uint32_t AsciiSumDivLenHash (const HashTableElem_t value)
 
 Диаграмма распределения такой хэш-функции:
 
-![ascii_sum_div_len_hash](img/AsciiSumDivLenHash().png)
+![ascii_sum_div_len_hash](img/AsciiSumDivLenHash.png)
 
 Дисперсия такого распределения:
 ```
@@ -267,7 +267,7 @@ uint32_t RorHash (const HashTableElem_t value)
 
 Диаграмма распределения такой хэш-функции:
 
-![ror_hash](img/RorHash().png)
+![ror_hash](img/RorHash.png)
 
 Хэш-функция обладает не очень равномерным распределением. В принципе, использовать ее можно, но можно найти вариант лучше. 
 
@@ -310,7 +310,7 @@ uint32_t RolHash (const HashTableElem_t value)
 
 Диаграмма распределения такой хэш-функции:
 
-![rol_hash](img/RolHash().png)
+![rol_hash](img/RolHash.png)
 
 Распределение выглядит довольно равномерно, оно без особо ярко выраженных пиков. Функция пригодна к использованию в реальных задачах.  
 
@@ -388,7 +388,7 @@ uint32_t MurmurHash (const HashTableElem_t value)
 
 Диаграмма распределения такой хэш-функции:
 
-![murmurhash](img/MurmurHash().png)
+![murmurhash](img/MurmurHash.png)
 
 Хэш-функция показывает равномерное распределение и отсутствие пиков. Отличная хэш-функция для реальных задач.
 
