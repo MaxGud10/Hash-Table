@@ -26,6 +26,7 @@ uint32_t ascii_avg_hash (const HashTableElem_t value);
 uint32_t ror_hash       (const HashTableElem_t value);
 uint32_t rol_hash       (const HashTableElem_t value);
 uint32_t murmur_hash    (const HashTableElem_t value);
+uint32_t crc32_hash     (const HashTableElem_t value);
 
 
 uint32_t my_rol          (const uint32_t number, int num_to_rol);
