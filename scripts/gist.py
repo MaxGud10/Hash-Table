@@ -16,22 +16,22 @@ def load_data(filename):
 def plot_histogram(buckets, counts, filename):
     plt.figure  (figsize=(15, 6))
     
-    # гистограмма распределения по ячейкам
+    # РіРёСЃС‚РѕРіСЂР°РјРјР° СЂР°СЃРїСЂРµРґРµР»РµРЅРёСЏ РїРѕ СЏС‡РµР№РєР°Рј
     plt.subplot (1, 2, 1)
     plt.bar     (buckets, counts, width=1.0, alpha=0.7)
-    plt.title   ('Распределение элементов по ячейкам')
-    plt.xlabel  ('Номер ячейки')
-    plt.ylabel  ('Количество элементов')
+    plt.title   ('Р Р°СЃРїСЂРµРґРµР»РµРЅРёРµ СЌР»РµРјРµРЅС‚РѕРІ РїРѕ СЏС‡РµР№РєР°Рј')
+    plt.xlabel  ('РќРѕРјРµСЂ СЏС‡РµР№РєРё')
+    plt.ylabel  ('РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ')
     plt.grid    (True, linestyle='--', alpha=0.5)
     plt.xlim    (0, 1500)  # 8000
     
-    # гистограмма частот
+    # РіРёСЃС‚РѕРіСЂР°РјРјР° С‡Р°СЃС‚РѕС‚
     plt.subplot              (1, 2, 2)
     unique, freq = np.unique (counts, return_counts=True)
     plt.bar                  (unique, freq, width=0.8, alpha=0.7, color='orange')
-    plt.title                ('Частота встречаемости размеров цепочек')
-    plt.xlabel               ('Количество элементов в ячейке')
-    plt.ylabel               ('Частота')
+    plt.title                ('Р§Р°СЃС‚РѕС‚Р° РІСЃС‚СЂРµС‡Р°РµРјРѕСЃС‚Рё СЂР°Р·РјРµСЂРѕРІ С†РµРїРѕС‡РµРє')
+    plt.xlabel               ('РљРѕР»РёС‡РµСЃС‚РІРѕ СЌР»РµРјРµРЅС‚РѕРІ РІ СЏС‡РµР№РєРµ')
+    plt.ylabel               ('Р§Р°СЃС‚РѕС‚Р°')
     plt.grid                 (True, linestyle='--', alpha=0.5)
     
     plt.tight_layout ()
@@ -39,11 +39,11 @@ def plot_histogram(buckets, counts, filename):
     plt.show         ()
 
 if __name__ == '__main__':
-    input_file = '/home/max/WORK/Hash_table/src/load_dump_8.txt' 
+    input_file = '/home/max/WORK/Hash_table/src/load_dump_9.txt' 
     
     if not os.path.exists(input_file):
-        print (f"Файл {input_file} не найден!")
-        print ("Текущая директория:", os.getcwd())
+        print (f"Р¤Р°Р№Р» {input_file} РЅРµ РЅР°Р№РґРµРЅ!")
+        print ("РўРµРєСѓС‰Р°СЏ РґРёСЂРµРєС‚РѕСЂРёСЏ:", os.getcwd())
         exit  (1)
     
     buckets, counts = load_data(input_file)
