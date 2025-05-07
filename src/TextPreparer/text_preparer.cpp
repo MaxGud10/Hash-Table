@@ -23,6 +23,13 @@ PreparingFuncStatus prepare_text (const char* input_file_name)
     {
         int fscanf_status = fscanf (input_file, " %[^-;,.\"*:?\n\r!() ]", word); 
 
+        // int fscanf_status = 0;
+
+        // if (output_file == NULL || word == NULL) {
+        //     fscanf_status = fprintf(stderr, "CRITICAL: output_file=%p, word=%p\n", (void*)output_file, (void*)word);
+        //     fflush(stderr);
+        // }
+        
         if (fscanf_status != EOF && fscanf_status != 0)
             fprintf (output_file, "%s\n", word); 
 
