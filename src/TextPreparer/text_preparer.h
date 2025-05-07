@@ -3,7 +3,7 @@
 
 const int TXT_PREP_MAX_FILE_NAME_LENGTH = 64;
 
-const int MAX_WORD_LENGTH = 32;
+const int MAX_WORD_LENGTH               = 32;
 
 enum PreparingFuncStatus 
 {
