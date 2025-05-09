@@ -1,9 +1,20 @@
+section .text
 global MyStrcmp
 
-section .code
+MyStrcmp:
+    vmovdqu     ymm0,       [rdi]       
+    vpcmpeqb    ymm1, ymm0, [rsi] 
+    vpmovmskb   eax,  ymm1     
 
-MyStrcmp:   vlddqu ymm1, [rcx]
-            vptest ymm1, [rdx]
-            xor rax, rax
-            setc al
-            ret
+    xor         eax, 0xFFFFFFFF   
+    jz          .equal  
+              
+    mov         eax, 1            
+    ret
+
+.equal:
+    xor         eax, eax          
+    ret
+
+
+
