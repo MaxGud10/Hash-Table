@@ -1,14 +1,13 @@
 #ifndef LIST_FUNC_H
 #define LIST_FUNC_H
 
-
 #include <stdint.h>
 
 #ifndef NDEBUG
     #define LIST_VERIFY(list)   do {                                   \
-                                    if (verify_list (list) != 0)    \
+                                    if (verify_list (list) != 0)       \
                                     {                                  \
-                                        LIST_DUMP (list);               \
+                                        LIST_DUMP (list);              \
                                         return LIST_FUNC_STATUS_FAIL;  \
                                     }                                  \
                                 } while (0)
@@ -37,7 +36,7 @@
 
 typedef const char* ListElem_t;
 
-struct ListMainItems 
+struct __attribute__((aligned(32))) ListMainItems 
 {
     ListElem_t value;
 
@@ -77,7 +76,8 @@ enum ListErrors
     DAMAGED_LIST_DUMMY_NODE,
     INVALID_LIST_ELEM_NEXT,
     DAMAGED_CONNECTION_LIST,
-    DAMAGED_LIST_FREE_ELEM
+    DAMAGED_LIST_FREE_ELEM,
+    INVALID_LIST_ELEM_VALUE
 };
 
 // Basic operations with the list

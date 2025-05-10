@@ -8,9 +8,8 @@
 #include "fast_list_func.h"
 #include "fast_list_log.h"
 
-extern "C" {
-    int MyStrcmp (const char *first_word, const char *second_word);
-}
+extern "C" int MyStrcmp   (const char* first_word, const char* second_word);
+inline     int FastStrCmp (const char* first_word, const char* second_word);
 
 ListFuncStatus init_list (List* created_list, const int64_t list_capacity) 
 {
@@ -22,7 +21,10 @@ ListFuncStatus init_list (List* created_list, const int64_t list_capacity)
     created_list->capacity  = list_capacity + 1; // +1 because of dummy node
     created_list->list_size = 0;
 
-    init_list_arrays (created_list);
+    if (init_list_arrays(created_list) != LIST_FUNC_STATUS_OK)
+        return LIST_FUNC_STATUS_FAIL;
+
+    // init_list_arrays (created_list);
 
     ON_DEBUG (FAST_LIST_DUMP (created_list));
 
@@ -47,7 +49,9 @@ ListFuncStatus init_list_arrays (List* list_for_create_arrs)
     assert (list_for_create_arrs);
 
     (list_for_create_arrs->mainItems) = (ListMainItems*) calloc (list_for_create_arrs->capacity, sizeof (ListMainItems));
+    // (list_for_create_arrs->mainItems) = (ListMainItems*) aligned_alloc (32, list_for_create_arrs->capacity * sizeof(ListMainItems));
 
+    // memset (list_for_create_arrs->mainItems, 0, list_for_create_arrs->capacity * sizeof(ListMainItems)); 
     assert (list_for_create_arrs->mainItems);
  
     create_dummy_node (list_for_create_arrs);
@@ -62,7 +66,7 @@ ListFuncStatus dtor_list_arrays (List* list_for_arr_destruct)
 
     clear_list_arrays (list_for_arr_destruct);
 
-    free (list_for_arr_destruct->mainItems);
+    free (list_for_arr_destruct->mainItems); 
     list_for_arr_destruct->      mainItems = NULL;
 
     return LIST_FUNC_STATUS_OK;
@@ -166,7 +170,13 @@ unsigned int verify_list (const List* const list_to_verify)
         log_list_error ("DAMAGED_LIST_DUMMY_NODE");
     }
 
-    for (int64_t i = 0; i < (list_to_verify->capacity); i++) 
+    if (list_to_verify->mainItems == NULL || list_to_verify->capacity <= 0) 
+    {
+        list_errors |= NEGATIVE_LIST_CAPACITY;
+        return list_errors;
+    }
+
+    for (int64_t i = 0; i <= (list_to_verify->capacity); i++) 
     {
         int64_t first_elem_next_index = (list_to_verify->mainItems)[i].next;
 
@@ -174,6 +184,12 @@ unsigned int verify_list (const List* const list_to_verify)
 
         if (first_elem_next_index == -1 && (list_to_verify->mainItems)[i].value == (ListElem_t) POISON)
             continue;
+
+        if ((list_to_verify->mainItems)[i].value == NULL) 
+        {
+            list_errors |= INVALID_LIST_ELEM_VALUE;
+            log_list_error("INVALID_LIST_ELEM_VALUE");
+        }
 
         if (first_elem_next_index >= (list_to_verify->capacity) || first_elem_next_index < 0) 
         {
@@ -252,7 +268,7 @@ ListFuncStatus remove_list_elem (List* const list_for_remove_elem, const int64_t
     if (free_list_elem (list_for_remove_elem, index_in_list_remove) == LIST_FUNC_STATUS_FAIL)
         return LIST_FUNC_STATUS_FAIL;
 
-        connect_list_elems (list_for_remove_elem, prev_of_index_remove, next_of_index_remove);
+    connect_list_elems (list_for_remove_elem, prev_of_index_remove, next_of_index_remove);
 
     (list_for_remove_elem->list_size)--;
 
@@ -271,7 +287,7 @@ ListFuncStatus free_list_elem (List* const list_for_free_elem, const int64_t ind
 
         return LIST_FUNC_STATUS_FAIL;
 
-    (list_for_free_elem->mainItems)[index_in_list_free].value = (ListElem_t) POISON;
+    (list_for_free_elem->mainItems)[index_in_list_free].value = NULL; // (ListElem_t) POISON;
     (list_for_free_elem->mainItems)[index_in_list_free].next  = -1;
     (list_for_free_elem->mainItems)[index_in_list_free].prev  = (list_for_free_elem -> controlItems).free;
 
@@ -331,15 +347,63 @@ ListFuncStatus increase_list_capacity (List* const list_for_increase_cap)
     return LIST_FUNC_STATUS_OK;
 }
 
-ListFuncStatus find_list_elem (List* list, ListElem_t value_to_find) 
+inline int FastStrCmp(const char* a, const char* b) 
 {
+    // // загружаем 32 байта из каждой строки
+    __m256i vec1 = _mm256_loadu_si256 ((const __m256i*)a);
+    __m256i vec2 = _mm256_loadu_si256 ((const __m256i*)b);
+    
+    // сравниваем байты векторов
+    __m256i cmp_result = _mm256_cmpeq_epi8   (vec1, vec2);
+    
+    // преобразуем результат сравнения в битовую маску
+    unsigned int mask = _mm256_movemask_epi8 (cmp_result);
+    
+    // проверяем, все ли байты равны
+    if ((mask ^ 0xFFFFFFFF) == 0) 
+        return 0; 
+    
+    return 1;  
+
+    // uint64_t a8, b8;
+
+    // // memcpy (&a8, a, 8);
+    // // memcpy (&b8, b, 8);
+
+    // // if (a8 != b8) return 1;
+
+    // __m256i av  = _mm256_loadu_si256 ((const __m256i*)a);
+    // __m256i bv  = _mm256_loadu_si256 ((const __m256i*)b);
+    // __m256i cmp = _mm256_cmpeq_epi8  (av, bv);
+
+    // return _mm256_movemask_epi8 (cmp) ^ 0xFFFFFFFF;
+}
+
+ListFuncStatus find_list_elem (List* list, ListElem_t value_to_find) 
+{      
+    // if (!list || !value_to_find || list->capacity <= 0) {
+    //     return LIST_FUNC_STATUS_FAIL;
+    // }
+
     LIST_VERIFY (list);
 
     int64_t curr_index = (list->mainItems)[DUMMY_ELEM_POS].next;
 
-    while (curr_index != DUMMY_ELEM_POS) {
+    while (curr_index != DUMMY_ELEM_POS) 
+    {       
+        if (list->mainItems[curr_index].value == NULL) {
+            break;
+        }
 
-        if (MyStrcmp ((list->mainItems)[curr_index].value, value_to_find) == 0)
+        ListElem_t current_value = (list->mainItems)[curr_index].value;
+        
+        // if (current_value == NULL && value_to_find == NULL)
+        //     return LIST_FUNC_STATUS_OK;
+            
+        // if (current_value == NULL || value_to_find == NULL)
+        //     return LIST_FUNC_STATUS_FAIL;
+
+        if (FastStrCmp ((list->mainItems)[curr_index].value, value_to_find) == 0)
             return LIST_FUNC_STATUS_OK; 
           
         curr_index = (list->mainItems)[curr_index].next; 

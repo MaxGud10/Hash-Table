@@ -16,5 +16,3 @@ MyStrcmp:
     xor         eax, eax          
     ret
 
-
-
