@@ -97,16 +97,15 @@ uint32_t murmur_hash (const HashTableElem_t value)
 
     
     // avx2 version
-    //
     // asm volatile (
-    //     "vlddqu ymm1, [%1]\n\t"       
-    //     "vpxor  ymm2, ymm2, ymm2\n\t"  
-    //     "vpcmpeqb ymm1, ymm1, ymm2\n\t" 
-    //     "vpmovmskb %0, ymm1\n\t"     
-    //     "tzcnt %0, %0"                
-    //     : "=r" (len)                  
-    //     : "r" (value)                
-    //     : "ymm1", "ymm2", "cc"       
+    //     "vlddqu ymm1, [%1]\n\t"      // Загружаем 32 байта вместо 16
+    //     "vpxor ymm2, ymm2, ymm2\n\t"
+    //     "vpcmpeqb ymm1, ymm1, ymm2\n\t"
+    //     "vpmovmskb %0, ymm1\n\t"      // Получаем 32-битную маску
+    //     "tzcnt %0, %0\n\t"
+    //     : "=r" (len)
+    //     : "r" (value)
+    //     : "ymm1", "ymm2"
     // );
 
 
@@ -220,19 +219,6 @@ static const uint32_t crc_table[256] = {
     0xB3667A2E, 0xC4614AB8, 0x5D681B02, 0x2A6F2B94,
     0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
 };
-
-// uint32_t crc32_hash(const HashTableElem_t value) 
-// {
-//     uint32_t crc = 0xFFFFFFFF;
-//     const unsigned char* ptr = (const unsigned char*)value;
-    
-//     while (*ptr) 
-//     {
-//         crc = crc_table[(crc ^ *ptr++) & 0xFF] ^ (crc >> 8);
-//     }
-
-//     return crc ^ 0xFFFFFFFF;
-// }
 
 uint32_t crc32_hash (const HashTableElem_t value) 
 {
