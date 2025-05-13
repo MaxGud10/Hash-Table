@@ -13,6 +13,12 @@
 #include "hash_table_dsl.h"
 #include "hash_table_log.h"
 
+#ifndef VISUAL_STUDIO
+    #include <immintrin.h>
+#else
+    #include <intrin.h>  // espessialy for visual studio msvc  
+#endif
+
 #define HASH_ALGORITHM_VAR_PRINT(hash_table, algorithm_name)                                          \
                                     {                                                                 \
                                         printf (algorithm_name ":\n");                                \
