@@ -16,7 +16,7 @@
 #ifndef VISUAL_STUDIO
     #include <immintrin.h>
 #else
-    #include <intrin.h>  // espessialy for visual studio msvc  
+    #include <intrin.h>   
 #endif
 
 #define HASH_ALGORITHM_VAR_PRINT(hash_table, algorithm_name)                                          \
@@ -73,7 +73,6 @@ HashTableFuncStatus dtor_hash_table (HashTable* hash_table)
 
 HashTableFuncStatus insert_hash_table (HashTable* hash_table, const HashTableElem_t data, const int64_t key) 
 {
-    // assert (hash_table);
     if (hash_table == NULL)
     {
         fprintf (stderr, "\nhash_table = NULL\n");
