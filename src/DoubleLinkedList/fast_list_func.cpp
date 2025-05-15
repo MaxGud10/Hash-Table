@@ -10,6 +10,7 @@
 
 extern "C" int MyStrcmp   (const char* first_word, const char* second_word);
 inline     int FastStrCmp (const char* first_word, const char* second_word);
+           int boost_strcmp (const char* str_1, const char* str_2);
 
 ListFuncStatus init_list (List* created_list, const int64_t list_capacity) 
 {
@@ -349,36 +350,26 @@ ListFuncStatus increase_list_capacity (List* const list_for_increase_cap)
 
 inline int FastStrCmp(const char* a, const char* b) 
 {
-    // // загружаем 32 байта из каждой строки
-    __m256i vec1 = _mm256_loadu_si256 ((const __m256i*)a);
-    __m256i vec2 = _mm256_loadu_si256 ((const __m256i*)b);
-    
-    // сравниваем байты векторов
-    __m256i cmp_result = _mm256_cmpeq_epi8   (vec1, vec2);
-    
-    // преобразуем результат сравнения в битовую маску
-    unsigned int mask = _mm256_movemask_epi8 (cmp_result);
-    
-    // проверяем, все ли байты равны
-    if ((mask ^ 0xFFFFFFFF) == 0) 
-        return 0; 
-    
-    return 1;  
+    __m256i v0 = _mm256_loadu_si256 ((const __m256i*)a);
+    __m256i v1 = _mm256_cmpeq_epi8  (v0, _mm256_loadu_si256((const __m256i*)b));
 
-    // uint64_t a8, b8;
+    unsigned mask = _mm256_movemask_epi8(v1);
 
-    // // memcpy (&a8, a, 8);
-    // // memcpy (&b8, b, 8);
+    mask = (~mask) & 1;
 
-    // // if (a8 != b8) return 1;
-
-    // __m256i av  = _mm256_loadu_si256 ((const __m256i*)a);
-    // __m256i bv  = _mm256_loadu_si256 ((const __m256i*)b);
-    // __m256i cmp = _mm256_cmpeq_epi8  (av, bv);
-
-    // return _mm256_movemask_epi8 (cmp) ^ 0xFFFFFFFF;
+    _mm256_zeroupper();
+    return (int)mask;
 }
 
+int boost_strcmp (const char* str_1, const char* str_2)
+{
+    __m256i string_1 = _mm256_loadu_si256 ((const __m256i*)(str_1));
+    __m256i string_2 = _mm256_loadu_si256 ((const __m256i*)(str_2));
+
+    return ~(_mm256_movemask_epi8 (_mm256_cmpeq_epi8 (string_1, string_2)));
+}
+
+ 
 ListFuncStatus find_list_elem (List* list, ListElem_t value_to_find) 
 {      
     // if (!list || !value_to_find || list->capacity <= 0) {
@@ -403,7 +394,7 @@ ListFuncStatus find_list_elem (List* list, ListElem_t value_to_find)
         // if (current_value == NULL || value_to_find == NULL)
         //     return LIST_FUNC_STATUS_FAIL;
 
-        if (FastStrCmp ((list->mainItems)[curr_index].value, value_to_find) == 0)
+        if (MyStrcmp ((list->mainItems)[curr_index].value, value_to_find) == 0)
             return LIST_FUNC_STATUS_OK; 
           
         curr_index = (list->mainItems)[curr_index].next; 

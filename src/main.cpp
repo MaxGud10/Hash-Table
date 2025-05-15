@@ -47,35 +47,3 @@ int main (const int argc, const char *argv[])
 
     return 0;
 }
-// int main(const int argc, const char* argv[]) 
-// {
-//     if (argc != 2) 
-//     {
-//         fprintf(stderr, "Usage: %s <input_file>\n", argv[0]);
-//         return -1;
-//     }
-
-//     printf ("Select mode:\n",
-//             "1 - Test all hash functions (variance)\n",
-//             "2 - Benchmark search performance\n");
-    
-//     int mode = 0;
-//     scanf("%d", &mode);
-
-//     switch(mode) 
-//     {
-//         case 1:
-//             test_hash_functions(argv[1]);
-//             break;
-
-//         case 2:
-//             test_hash_table_search(argv[1]);
-//             break;
-
-//         default:
-//             fprintf(stderr, "Invalid mode selected\n");
-//             return -1;
-//     }
-
-//     return 0;
-// }
