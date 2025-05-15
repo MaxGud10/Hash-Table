@@ -945,7 +945,7 @@ for (size_t i = 0; i < MAX_BENCHMARK_COMP_NUM; i++)
    for (size_t word_num = 0; word_num < ((size_t) words->num_of_words); word_num++) 
    {
 
-        //HashTableFind (hash_table, curr_word);
+        //find_in_hash_table (hash_table, curr_word);
         curr_word += MAX_WORD_LENGTH;
    }
 }
