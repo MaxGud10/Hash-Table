@@ -110,8 +110,8 @@ HashTableFuncStatus find_in_hash_table (HashTable* hash_table, const HashTableEl
 {
     assert (hash_table);
 
-    int64_t cell_num = murmur_hash     (data) % HASH_TABLE_SIZE_;
-    // int64_t cell_num = intrinsic_crc32 (data) % HASH_TABLE_SIZE_;
+    // int64_t cell_num = murmur_hash     (data) % HASH_TABLE_SIZE_;
+    int64_t cell_num = intrinsic_crc32 (data) % HASH_TABLE_SIZE_;
     // int64_t cell_num = crc32_hash      (data) % HASH_TABLE_SIZE_;
     List*   cell_ptr = HASH_TABLE_CELL_ + cell_num;
 
@@ -316,11 +316,11 @@ HashTableFuncStatus test_hash_table_search (const char* input_file_name)
     HashTable hash_table = {};
     init_hash_table (&hash_table, DEFAULT_HASH_TABLE_CAPACITY);
 
-    // if (read_hash_table_data (input_file_name, &hash_table, crc32_hash) == HASH_TABLE_FUNC_STATUS_FAIL)
-    //     return HASH_TABLE_FUNC_STATUS_FAIL;
-
-    if (read_hash_table_data (input_file_name, &hash_table, murmur_hash) == HASH_TABLE_FUNC_STATUS_FAIL)
+    if (read_hash_table_data (input_file_name, &hash_table, crc32_hash) == HASH_TABLE_FUNC_STATUS_FAIL)
         return HASH_TABLE_FUNC_STATUS_FAIL;
+
+    // if (read_hash_table_data (input_file_name, &hash_table, murmur_hash) == HASH_TABLE_FUNC_STATUS_FAIL)
+    //     return HASH_TABLE_FUNC_STATUS_FAIL;
 
     FILE* data_file = NULL;
 

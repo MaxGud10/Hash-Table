@@ -348,7 +348,7 @@ ListFuncStatus increase_list_capacity (List* const list_for_increase_cap)
     return LIST_FUNC_STATUS_OK;
 }
 
-inline int FastStrCmp(const char* a, const char* b) 
+inline int FastStrCmp (const char* a, const char* b) 
 {
     __m256i v0 = _mm256_loadu_si256 ((const __m256i*)a);
     __m256i v1 = _mm256_cmpeq_epi8  (v0, _mm256_loadu_si256((const __m256i*)b));
@@ -394,7 +394,7 @@ ListFuncStatus find_list_elem (List* list, ListElem_t value_to_find)
         // if (current_value == NULL || value_to_find == NULL)
         //     return LIST_FUNC_STATUS_FAIL;
 
-        if (MyStrcmp ((list->mainItems)[curr_index].value, value_to_find) == 0)
+        if (FastStrCmp ((list->mainItems)[curr_index].value, value_to_find) == 0)
             return LIST_FUNC_STATUS_OK; 
           
         curr_index = (list->mainItems)[curr_index].next; 
